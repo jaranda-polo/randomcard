@@ -18,17 +18,42 @@
         }
         .container {
             text-align: center;
+            max-width: 1200px;
+            width: 100%;
+        }
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2rem;
         }
         h1 {
             color: #6a1b9a;
             font-size: 2.5rem;
-            margin-bottom: 2rem;
+            margin: 0;
+            margin-right: 1rem;
+        }
+        .refresh-btn {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+        .refresh-icon {
+            width: 24px;
+            height: 24px;
+            fill: #6a1b9a;
+            transition: transform 0.3s ease;
+        }
+        .refresh-btn:hover .refresh-icon {
+            transform: rotate(180deg);
         }
         .cards-container {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
             gap: 2rem;
+            margin-bottom: 2rem;
         }
         .card {
             width: 280px;
@@ -71,11 +96,48 @@
             font-size: 1.5rem;
             box-sizing: border-box;
         }
+        .example-dialog {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 2rem;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: left;
+        }
+        .example-dialog.show {
+            opacity: 1;
+        }
+        .example-dialog h2 {
+            color: #6a1b9a;
+            font-size: 1.8rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        .example-dialog p {
+            margin: 0 0 1.2rem 0;
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+        .example-dialog strong {
+            font-weight: bold;
+            color: #4a00e0;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>English Lesson Cards</h1>
+        <div class="header">
+            <h1>English Lesson Cards</h1>
+            <button class="refresh-btn" aria-label="Refresh cards">
+                <svg class="refresh-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                </svg>
+            </button>
+        </div>
         <div class="cards-container">
             <div class="card">
                 <div class="card-inner">
@@ -96,20 +158,131 @@
                 </div>
             </div>
         </div>
+        <div class="example-dialog"></div>
     </div>
 
     <script>
-        const questions = [
-            "How was your recent birthday party?",
-            "What's your favorite animal and why?",
-            "If you could have any superpower, what would it be?",
-            "What's the best gift you've ever received?",
-            "Tell me about your favorite book or movie.",
-            "What do you want to be when you grow up?",
-            "If you could travel anywhere in the world, where would you go?",
-            "What's your favorite food to eat on a special day?",
-            "Tell me about your best friend.",
-            "What's the most fun thing you did last weekend?"
+        const questionsAndDialogues = [
+            {
+                question: "How was your recent birthday party?",
+                dialogue: `<strong>Teacher:</strong> How was your recent birthday party?
+<strong>Student:</strong> It was amazing! We had a superhero theme and I dressed up as Spider-Man.
+
+<strong>Teacher:</strong> That sounds fun! What was your favorite part of the party?
+<strong>Student:</strong> Playing games with my friends and eating the Spider-Man cake!`
+            },
+            {
+                question: "What's your favorite animal and why?",
+                dialogue: `<strong>Teacher:</strong> What's your favorite animal and why?
+<strong>Student:</strong> I love penguins because they're so cute and they can swim really well.
+
+<strong>Teacher:</strong> Penguins are interesting! Do you know where they live?
+<strong>Student:</strong> Yes, they live in cold places like Antarctica and the South Pole.`
+            },
+            {
+                question: "If you could have any superpower, what would it be?",
+                dialogue: `<strong>Teacher:</strong> If you could have any superpower, what would it be?
+<strong>Student:</strong> I'd love to be able to fly! It would be so cool to soar through the sky.
+
+<strong>Teacher:</strong> Flying would be amazing! Where would you fly to first?
+<strong>Student:</strong> I'd fly to the top of Mount Everest to see the view from the highest point on Earth.`
+            },
+            {
+                question: "What's the best gift you've ever received?",
+                dialogue: `<strong>Teacher:</strong> What's the best gift you've ever received?
+<strong>Student:</strong> My bicycle! I got it for my 10th birthday and I love riding it every day.
+
+<strong>Teacher:</strong> A bicycle is a great gift! Do you ride it to school?
+<strong>Student:</strong> Yes, I ride it to school when the weather is nice. It's so much fun!`
+            },
+            {
+                question: "Tell me about your favorite book or movie.",
+                dialogue: `<strong>Teacher:</strong> Tell me about your favorite book or movie.
+<strong>Student:</strong> My favorite movie is "Toy Story". I love all the characters, especially Buzz Lightyear!
+
+<strong>Teacher:</strong> "Toy Story" is a classic! What do you like about Buzz Lightyear?
+<strong>Student:</strong> I like how he learns to be a good friend and work together with Woody.`
+            },
+            {
+                question: "What do you want to be when you grow up?",
+                dialogue: `<strong>Teacher:</strong> What do you want to be when you grow up?
+<strong>Student:</strong> I want to be a veterinarian because I love animals and want to help them.
+
+<strong>Teacher:</strong> That's a wonderful goal! What animals would you like to help the most?
+<strong>Student:</strong> I want to help all kinds of animals, but especially dogs and cats.`
+            },
+            {
+                question: "If you could travel anywhere in the world, where would you go?",
+                dialogue: `<strong>Teacher:</strong> If you could travel anywhere in the world, where would you go?
+<strong>Student:</strong> I'd love to visit Japan to see the cherry blossoms and try authentic sushi.
+
+<strong>Teacher:</strong> Japan is beautiful in spring! What else interests you about Japan?
+<strong>Student:</strong> I want to visit ancient temples and maybe see Mount Fuji.`
+            },
+            {
+                question: "What's your favorite food to eat on a special day?",
+                dialogue: `<strong>Teacher:</strong> What's your favorite food to eat on a special day?
+<strong>Student:</strong> I love eating pizza on my birthday! Especially with pepperoni and extra cheese.
+
+<strong>Teacher:</strong> Pizza is a popular choice! Do you ever make pizza at home?
+<strong>Student:</strong> Yes, sometimes we make pizza as a family. It's fun to choose our own toppings!`
+            },
+            {
+                question: "Tell me about your best friend.",
+                dialogue: `<strong>Teacher:</strong> Tell me about your best friend.
+<strong>Student:</strong> My best friend is Sarah. We've known each other since kindergarten.
+
+<strong>Teacher:</strong> That's a long friendship! What do you like most about Sarah?
+<strong>Student:</strong> She's always kind and makes me laugh when I'm feeling sad.`
+            },
+            {
+                question: "What's the most fun thing you did last weekend?",
+                dialogue: `<strong>Teacher:</strong> What's the most fun thing you did last weekend?
+<strong>Student:</strong> I went to an amusement park with my family and rode a big roller coaster!
+
+<strong>Teacher:</strong> That sounds exciting! How did you feel on the roller coaster?
+<strong>Student:</strong> I was scared at first, but then it was so much fun! I want to go again.`
+            },
+            {
+                question: "If you could invent something, what would it be?",
+                dialogue: `<strong>Teacher:</strong> If you could invent something, what would it be?
+<strong>Student:</strong> I'd invent a machine that can clean my room instantly!
+
+<strong>Teacher:</strong> That's a creative idea! How do you think it would work?
+<strong>Student:</strong> It would have robot arms to pick things up and put them away quickly.`
+            },
+            {
+                question: "What's your favorite season and why?",
+                dialogue: `<strong>Teacher:</strong> What's your favorite season and why?
+<strong>Student:</strong> I love summer because we have no school and can go to the beach.
+
+<strong>Teacher:</strong> Summer is a fun time! What's your favorite summer activity?
+<strong>Student:</strong> I enjoy building sandcastles and swimming in the ocean with my friends.`
+            },
+            {
+                question: "If you could meet any famous person, who would it be?",
+                dialogue: `<strong>Teacher:</strong> If you could meet any famous person, who would it be?
+<strong>Student:</strong> I'd love to meet Elon Musk because he makes cool inventions like rockets.
+
+<strong>Teacher:</strong> Elon Musk is certainly innovative! What would you ask him?
+<strong>Student:</strong> I'd ask him about his plans for space travel and how to become an inventor.`
+            },
+            {
+                question: "What's the most challenging thing you've ever done?",
+                dialogue: `<strong>Teacher:</strong> What's the most challenging thing you've ever done?
+<strong>Student:</strong> Learning to ride a bike without training wheels was really hard at first.
+
+<strong>Teacher:</strong> That can be tricky! How did you feel when you finally succeeded?
+<strong>Student:</strong> I felt really proud and excited to ride around the neighborhood by myself.`
+            },
+            {
+                question: "What's your favorite school subject and why?",
+                dialogue: `<strong>Teacher:</strong> What's your favorite school subject and why?
+<strong>Student:</strong> I love science because we do cool experiments, like making volcanoes erupt!
+
+<strong>Teacher:</strong> Science can be very exciting! What have you learned from these experiments?
+<strong>Student:</strong> I've learned how different chemicals react and how to follow scientific methods.`
+            }
         ];
 
         function shuffleArray(array) {
@@ -121,17 +294,48 @@
 
         function initializeCards() {
             const cards = document.querySelectorAll('.card');
-            shuffleArray(questions);
+            shuffleArray(questionsAndDialogues);
             
             cards.forEach((card, index) => {
                 const backFace = card.querySelector('.card-back');
-                backFace.textContent = questions[index];
+                backFace.textContent = questionsAndDialogues[index].question;
                 
                 card.addEventListener('click', () => {
                     card.classList.toggle('flipped');
+                    updateExampleDialog(index, card.classList.contains('flipped'));
                 });
             });
         }
+
+        function updateExampleDialog(index, isFlipped) {
+            const dialogElement = document.querySelector('.example-dialog');
+            if (isFlipped) {
+                dialogElement.innerHTML = `<h2>Example</h2>${questionsAndDialogues[index].dialogue}`;
+                dialogElement.classList.add('show');
+            } else {
+                dialogElement.classList.remove('show');
+            }
+        }
+
+        function refreshCards() {
+            const cards = document.querySelectorAll('.card');
+            const dialogElement = document.querySelector('.example-dialog');
+            
+            cards.forEach(card => {
+                card.classList.remove('flipped');
+            });
+            
+            dialogElement.classList.remove('show');
+            
+            shuffleArray(questionsAndDialogues);
+            
+            cards.forEach((card, index) => {
+                const backFace = card.querySelector('.card-back');
+                backFace.textContent = questionsAndDialogues[index].question;
+            });
+        }
+
+        document.querySelector('.refresh-btn').addEventListener('click', refreshCards);
 
         initializeCards();
     </script>
